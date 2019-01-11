@@ -6,7 +6,7 @@ body {
   -webkit-font-smoothing: antialiased;
   font-size: 1.125em;
   color: #333;
-  line-height: 1.5em;
+  /* line-height: 1.5em; */
 }
 
 h1, h2, h3 {
@@ -31,4 +31,25 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+.high {
+    margin: 0px;
+    padding: 4px;
+    background-color: #0f9;
+}
+
+.normal {
+    margin: 0px;
+    padding: 4px;
+}
+
+.done {
+    margin: 0px;
+    padding: 4px;
+    color: grey;
+}
+
+.ws {
+    margin-right: -4px;
 }
