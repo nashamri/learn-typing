@@ -4,16 +4,22 @@
    [clojure.string :as s]))
 
 (declare win-page)
-(def articles [
-               "ليسب هي لغة برمجة ذات تاريخ عريق، فقد تم وضع مواصفاتها عام ١٩٥٨ وبذلك تحل بعد الفورتران التي طورت قبلها بسنة، كثاني لغة برمجة عالية المستوى."
-               "هاسكل هي لغة برمجة مطابقة للمعايير، للأغراض العامة، وهي لغة وظيفية إلى حد كبير، دون دلالات ألفاظ ملزمة وبكتابة ثابتة وقوية. وقد سميت بهاسكل على اسم عالم المنطق هاسكل كوري. وفي لغة هاسكل، تمثل الوظيفة مواطن من الدرجة الأولى من لغة البرمجة. ولكونها لغة برمجة وظيفية فإن بنية التحكم الرئيسية هي الوظيفة. وترجع أصول اللغة إلى ملاحظات هاسكل كوري وأتباعه من المفكرين، بأن الإثبات هو برنامج والمعادلة التي يثبتها هي نوع للبرنامج"
-               ])
-(def article (rand-nth articles))
-(def words (s/split article #" "))
-(def app-state (r/atom {:goal (first words)
+(declare game-page)
+(def articles {:easy [
+                      "ليسب هي لغة برمجة ذات تاريخ عريق، فقد تم وضع مواصفاتها عام ١٩٥٨ وبذلك تحل بعد الفورتران التي طورت قبلها بسنة، كثاني لغة برمجة عالية المستوى."
+                      "مرحبا بكم، هذا نص سهل"
+                      ]
+               :medium []
+               :hard [
+                      "هاسكل هي لغة برمجة مطابقة للمعايير، للأغراض العامة، وهي لغة وظيفية إلى حد كبير، دون دلالات ألفاظ ملزمة وبكتابة ثابتة وقوية. وقد سميت بهاسكل على اسم عالم المنطق هاسكل كوري. وفي لغة هاسكل، تمثل الوظيفة مواطن من الدرجة الأولى من لغة البرمجة. ولكونها لغة برمجة وظيفية فإن بنية التحكم الرئيسية هي الوظيفة. وترجع أصول اللغة إلى ملاحظات هاسكل كوري وأتباعه من المفكرين، بأن الإثبات هو برنامج والمعادلة التي يثبتها هي نوع للبرنامج"
+                ]})
+
+(def app-state (r/atom {:init {:difficulty "easy"
+                               :custom-text ""}
+                        :goal ""
                         :current-word 1
-                        :words words
-                        :total-words (count words)
+                        :words []
+                        :total-words 0
                         :user-input ""
                         :score 0
                         :multiplier 1
@@ -28,9 +34,43 @@
 
 (defn start-page []
   [:div
+   ;; [:h5 (pr-str (get-in @app-state [:init]))]
+   ;; [:h5 (pr-str (get-in @app-state [:words]))]
    [:div.columns.is-centered
-    ]]
-  )
+    [:div.column.is-half.has-text-centered
+     [:h3 "اختر مستوى الصعوبة"]
+     [:div.column.is-half.has-text-centered
+      [:select {:name :game-diff
+                :on-change (fn [e] (swap! app-state assoc-in
+                                          [:init :difficulty] (-> e .-target .-value)))}
+       [:option {:value :easy} "سهل"]
+       [:option {:value :medium} "متوسط"]
+       [:option {:value :hard} "صعب"]
+       [:option {:value :custom} "مخصص"]
+       ]]
+     [:textarea {:style {:visibility (if (= (get-in @app-state [:init :difficulty]) "custom")
+                                       :visible
+                                       :hidden)}
+                 :placeholder "أضف النص هنا"
+                 :on-change (fn [e] (swap! app-state assoc-in
+                                           [:init :custom-text] (-> e .-target .-value)))}]
+     [:div.column.is-half.has-text-centered
+      [:a.button.is-link
+       {:on-click (fn [e]
+                    (let [diff (keyword (get-in @app-state [:init :difficulty]))
+                          raw-words (if (= diff :custom)
+                                      (get-in @app-state [:init :custom-text])
+                                      (rand-nth (diff articles)))
+                          words (s/split raw-words #" ")]
+                      (swap! app-state assoc
+                             :words words
+                             :goal (first words)
+                             :total-words (count words))
+                      (r/render [game-page] (.getElementById js/document "app"))
+                      ))}
+       "إبدأ"]]
+     ]]])
+
 
 (defn game-page []
   [:div
@@ -93,7 +133,7 @@
     [:h3 (reduce #(+ %1 (* (:max-multiplier @app-state) %2)) (map count (:words @app-state)))]]])
 
 (defn mount-root []
-  (r/render [game-page] (.getElementById js/document "app")))
+  (r/render [start-page] (.getElementById js/document "app")))
 
 (defn init! []
   (mount-root))
