@@ -61,7 +61,7 @@
                           raw-words (if (= diff :custom)
                                       (get-in @app-state [:init :custom-text])
                                       (rand-nth (diff articles)))
-                          words (s/split raw-words #" ")]
+                          words (interpose " " (s/split raw-words #" "))]
                       (swap! app-state assoc
                              :words words
                              :goal (first words)
