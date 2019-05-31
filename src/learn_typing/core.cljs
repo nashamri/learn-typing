@@ -87,15 +87,15 @@
      (let [highlight (:highlight @app-state)
            words (:words @app-state)]
        (doall
-        (interpose [:span {:class :ws} " "]
-                   (map-indexed (fn [i w]
-                                  [:span {:class
-                                          (cond
-                                            (< i highlight) :done
-                                            (> i highlight) :normal
-                                            (= i highlight) :high)}
-                                   w])
-                                words))))]]
+        (map-indexed (fn [i w]
+                       [:span
+                        {:key (str i w)
+                         :class (cond
+                                  (< i highlight) :done
+                                  (> i highlight) :normal
+                                  (= i highlight) :high)}
+                        w])
+                     words)))]]
    [:div.columns
     [:div.column.is-full
      [:input.input.has-text-centered
