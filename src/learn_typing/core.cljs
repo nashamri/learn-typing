@@ -13,8 +13,7 @@
                :hard ["هاسكل هي لغة برمجة مطابقة للمعايير، للأغراض العامة، وهي لغة وظيفية إلى حد كبير، دون دلالات ألفاظ ملزمة وبكتابة ثابتة وقوية. وقد سميت بهاسكل على اسم عالم المنطق هاسكل كوري. وفي لغة هاسكل، تمثل الوظيفة مواطن من الدرجة الأولى من لغة البرمجة. ولكونها لغة برمجة وظيفية فإن بنية التحكم الرئيسية هي الوظيفة. وترجع أصول اللغة إلى ملاحظات هاسكل كوري وأتباعه من المفكرين، بأن الإثبات هو برنامج والمعادلة التي يثبتها هي نوع للبرنامج."
                       "عقب إصدار لغة البرمجة ميريندا في عام 1985 بواسطة شركة برمجيات البحوث المحدودة زاد الاهتمام بلغات البرمجة الوظيفية الكسولة: بحلول عام 1987 زاد عدد لغات البرمجة الوظيفية الصرفة بشكل كبير. من بين هذه اللغات كانت ميراندا الأكثر استخداماً ولكنها لم تكن خاضعة للملكية العامة. لذلك في مؤتمر اللغات البرمجية الوظيفية وعمارة الحاسوب والذي تم عقده في بورتلاند اوريجون، تم عقد اجتماع أعرب فيه المشاركون بالإجماع على ضرورة تشكيل لجنة لتعمل على تحديد معايير مفتوحة لهذه اللغات. وكانت اللجنة تهدف إلى دمج اللغات الوظيفية الموجودة في ذلك الوقت في لغة واحدة عامة لتكون أساس للأبحاث المستقبلية في تصميمات اللغات الوظيفية."]})
 
-(def init-state {:init {:difficulty "easy"
-                        :custom-text ""}
+(def init-state {:init {:difficulty "easy" :custom-text ""}
                  :goal ""
                  :current-word 1
                  :words []
@@ -46,19 +45,19 @@
      [:div.column.is-full.has-text-centered
       [:select {:name :game-diff
                 :on-change (fn [e] (swap! app-state assoc-in
-                                          [:init :difficulty] (-> e .-target .-value)))}
+                                         [:init :difficulty] (-> e .-target .-value)))}
        [:option {:value :easy} "سهل"]
        [:option {:value :medium} "متوسط"]
        [:option {:value :hard} "صعب"]
        [:option {:value :custom} "مخصص"]]]
      [:textarea {:style {:display (if (= (get-in @app-state [:init :difficulty]) "custom")
-                                       :block
-                                       :none)}
+                                    :block
+                                    :none)}
                  :cols "50"
                  :rows "9"
                  :placeholder "أضف النص هنا"
                  :on-change (fn [e] (swap! app-state assoc-in
-                                           [:init :custom-text] (-> e .-target .-value)))}]
+                                          [:init :custom-text] (-> e .-target .-value)))}]
      [:div.column.is-full.has-text-centered
       [:a.button.is-link
        {:on-click (fn [e]
@@ -72,9 +71,7 @@
                              :goal (first words)
                              :total-words (count words))
                       (r/render [game-page] (.getElementById js/document "app"))))}
-       "إبدأ"]]
-     ]]])
-
+       "إبدأ"]]]]])
 
 (defn game-page []
   [:div
@@ -135,8 +132,8 @@
     [:h1 (str "لقد فزت! درجتك: " (.round js/Math (:score @app-state)))]
     [:h5 (str "أعلى درجة ممكنة هي: " (reduce #(+ %1 (* (:max-multiplier @app-state) %2)) (map count (:words @app-state))))]
     [:a.button.is-link {:on-click (fn [e] (do
-                                 (r/render [start-page] (.getElementById js/document "app"))
-                                 (reset-app-state!)))} "إلعب مرة أخرى؟"]]])
+                                           (r/render [start-page] (.getElementById js/document "app"))
+                                           (reset-app-state!)))} "إلعب مرة أخرى؟"]]])
 
 (defn mount-root []
   (r/render [start-page] (.getElementById js/document "app")))
