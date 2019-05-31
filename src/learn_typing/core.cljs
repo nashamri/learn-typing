@@ -135,8 +135,8 @@
 (defn win-page []
   [:div.columns
    [:div.column.is-full.has-text-centered
-    [:h1 "لقد فزت!"]
-    [:h1 (.round js/Math (:score @app-state))]
+    [:img {:src "gif/success.gif" :width "75%"}]
+    [:h1 (str "لقد فزت! درجتك: " (.round js/Math (:score @app-state)))]
     [:h5 (str "أعلى درجة ممكنة هي: " (reduce #(+ %1 (* (:max-multiplier @app-state) %2)) (map count (:words @app-state))))]
     [:a.button.is-link {:on-click (fn [e] (do
                                  (r/render [start-page] (.getElementById js/document "app"))
