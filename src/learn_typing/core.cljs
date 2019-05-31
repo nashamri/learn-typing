@@ -22,6 +22,19 @@
                         :highlight 0
                         :last-time 0}))
 
+(defn reset-app-state! []
+  (swap! app-state assoc
+         :goal ""
+         :current-word 1
+         :words []
+         :total-words 0
+         :user-input ""
+         :score 0
+         :multiplier 1
+         :max-multiplier 5.0
+         :highlight 0
+         :last-time 0))
+
 (defn calc-score [score multiplier word-len]
   (+ score
      (* (if (< multiplier 1) 1 multiplier)
@@ -30,9 +43,9 @@
 (defn start-page []
   [:div
    [:div.columns.is-centered
-    [:div.column.is-half.has-text-centered
+    [:div.column.is-full.has-text-centered
      [:h3 "اختر مستوى الصعوبة"]
-     [:div.column.is-half.has-text-centered
+     [:div.column.is-full.has-text-centered
       [:select {:name :game-diff
                 :on-change (fn [e] (swap! app-state assoc-in
                                           [:init :difficulty] (-> e .-target .-value)))}
@@ -41,13 +54,15 @@
        [:option {:value :hard} "صعب"]
        [:option {:value :custom} "مخصص"]
        ]]
-     [:textarea {:style {:visibility (if (= (get-in @app-state [:init :difficulty]) "custom")
-                                       :visible
-                                       :hidden)}
+     [:textarea {:style {:display (if (= (get-in @app-state [:init :difficulty]) "custom")
+                                       :block
+                                       :none)}
+                 :cols "50"
+                 :row "9"
                  :placeholder "أضف النص هنا"
                  :on-change (fn [e] (swap! app-state assoc-in
                                            [:init :custom-text] (-> e .-target .-value)))}]
-     [:div.column.is-half.has-text-centered
+     [:div.column.is-full.has-text-centered
       [:a.button.is-link
        {:on-click (fn [e]
                     (let [diff (keyword (get-in @app-state [:init :difficulty]))
@@ -59,8 +74,7 @@
                              :words words
                              :goal (first words)
                              :total-words (count words))
-                      (r/render [game-page] (.getElementById js/document "app"))
-                      ))}
+                      (r/render [game-page] (.getElementById js/document "app"))))}
        "إبدأ"]]
      ]]])
 
@@ -123,7 +137,9 @@
     [:h1 "لقد فزت!"]
     [:h1 (.round js/Math (:score @app-state))]
     [:h5 (str "أعلى درجة ممكنة هي: " (reduce #(+ %1 (* (:max-multiplier @app-state) %2)) (map count (:words @app-state))))]
-    [:button "إلعب مرة أخرى؟"]]])
+    [:a.button.is-link {:on-click (fn [e] (do
+                                 (r/render [start-page] (.getElementById js/document "app"))
+                                 (reset-app-state!)))} "إلعب مرة أخرى؟"]]])
 
 (defn mount-root []
   (r/render [start-page] (.getElementById js/document "app")))
