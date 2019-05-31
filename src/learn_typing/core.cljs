@@ -44,6 +44,8 @@
   [:div
    [:div.columns.is-centered
     [:div.column.is-full.has-text-centered
+     [:img {:src "gif/typing.gif" :alt "from: https://www.gfaught.com/" :width "75%"}]]
+    [:div.column.is-full.has-text-centered
      [:h3 "اختر مستوى الصعوبة"]
      [:div.column.is-full.has-text-centered
       [:select {:name :game-diff
@@ -52,13 +54,12 @@
        [:option {:value :easy} "سهل"]
        [:option {:value :medium} "متوسط"]
        [:option {:value :hard} "صعب"]
-       [:option {:value :custom} "مخصص"]
-       ]]
+       [:option {:value :custom} "مخصص"]]]
      [:textarea {:style {:display (if (= (get-in @app-state [:init :difficulty]) "custom")
                                        :block
                                        :none)}
                  :cols "50"
-                 :row "9"
+                 :rows "9"
                  :placeholder "أضف النص هنا"
                  :on-change (fn [e] (swap! app-state assoc-in
                                            [:init :custom-text] (-> e .-target .-value)))}]
