@@ -13,33 +13,23 @@
                :hard ["هاسكل هي لغة برمجة مطابقة للمعايير، للأغراض العامة، وهي لغة وظيفية إلى حد كبير، دون دلالات ألفاظ ملزمة وبكتابة ثابتة وقوية. وقد سميت بهاسكل على اسم عالم المنطق هاسكل كوري. وفي لغة هاسكل، تمثل الوظيفة مواطن من الدرجة الأولى من لغة البرمجة. ولكونها لغة برمجة وظيفية فإن بنية التحكم الرئيسية هي الوظيفة. وترجع أصول اللغة إلى ملاحظات هاسكل كوري وأتباعه من المفكرين، بأن الإثبات هو برنامج والمعادلة التي يثبتها هي نوع للبرنامج."
                       "عقب إصدار لغة البرمجة ميريندا في عام 1985 بواسطة شركة برمجيات البحوث المحدودة زاد الاهتمام بلغات البرمجة الوظيفية الكسولة: بحلول عام 1987 زاد عدد لغات البرمجة الوظيفية الصرفة بشكل كبير. من بين هذه اللغات كانت ميراندا الأكثر استخداماً ولكنها لم تكن خاضعة للملكية العامة. لذلك في مؤتمر اللغات البرمجية الوظيفية وعمارة الحاسوب والذي تم عقده في بورتلاند اوريجون، تم عقد اجتماع أعرب فيه المشاركون بالإجماع على ضرورة تشكيل لجنة لتعمل على تحديد معايير مفتوحة لهذه اللغات. وكانت اللجنة تهدف إلى دمج اللغات الوظيفية الموجودة في ذلك الوقت في لغة واحدة عامة لتكون أساس للأبحاث المستقبلية في تصميمات اللغات الوظيفية."]})
 
-(def app-state (r/atom {:init {:difficulty "easy"
-                               :custom-text ""}
-                        :goal ""
-                        :current-word 1
-                        :words []
-                        :total-words 0
-                        :user-input ""
-                        :score 0
-                        :multiplier 1
-                        :max-multiplier 5.0
-                        :highlight 0
-                        :last-time 0}))
+(def init-state {:init {:difficulty "easy"
+                        :custom-text ""}
+                 :goal ""
+                 :current-word 1
+                 :words []
+                 :total-words 0
+                 :user-input ""
+                 :score 0
+                 :multiplier 1
+                 :max-multiplier 5.0
+                 :highlight 0
+                 :last-time 0})
+
+(def app-state (r/atom init-state))
 
 (defn reset-app-state! []
-  (swap! app-state assoc
-         :init {:difficulty "easy"
-                :custom-text ""}
-         :goal ""
-         :current-word 1
-         :words []
-         :total-words 0
-         :user-input ""
-         :score 0
-         :multiplier 1
-         :max-multiplier 5.0
-         :highlight 0
-         :last-time 0))
+  (reset! app-state init-state))
 
 (defn calc-score [score multiplier word-len]
   (+ score
