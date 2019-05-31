@@ -28,6 +28,8 @@
 
 (defn reset-app-state! []
   (swap! app-state assoc
+         :init {:difficulty "easy"
+                :custom-text ""}
          :goal ""
          :current-word 1
          :words []
